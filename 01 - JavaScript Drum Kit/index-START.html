@@ -9,6 +9,7 @@
 
 
   <div class="keys">
+    <!--Key Code for data-key for each letter. Data is the attribute. Key is used to hook it up with the name-->
     <div data-key="65" class="key">
       <kbd>A</kbd>
       <span class="sound">clap</span>
@@ -58,7 +59,28 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  
+  function playSound(e) {
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"`);
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"`);
+    if (!audio) return; //stop the function from running totally
+    audio.currentTime = 0; //rewind time to 0 each time played
+    audio.play();
+    console.log(key);
+    key.classList.add('playing');
+  }  
+  //Remove the transition (param event)
+  function removeTransition(e) {
+    if (e.propertyName !== 'transform') return; //skip if not a transform
+    this.classList.remove('playing');
+  }
 
+  const keys = document.querySelectorAll('.key');
+  //Use transition End event so the buttons don't stay focused and yellow
+  //we don't add event listener alone. Need to add listener for EACH item in the array.
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+
+  window.addEventListener('keydown', playSound);
 </script>
 
 
